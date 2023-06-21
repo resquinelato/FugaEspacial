@@ -1,4 +1,8 @@
-"""Jogo: Fuga Espacial.Descrição: Um grupo de diplomatas escapam de uma fortaleza estalar a bordo de uma nave danificada. A nave precisa se desviar das ameaças e sobreviver até atingir a zona de segurança diplomática."""
+"""
+Jogo: Fuga Espacial.
+Descrição: Um grupo de diplomatas escapam de uma fortaleza estalar a bordo de uma nave danificada.
+A nave precisa se desviar das ameaças e sobreviver até atingir a zona de segurança diplomática.
+"""
 
 import pygame
 
@@ -7,20 +11,35 @@ class Background:
     Esta classe define o Plano de fundo do jogo
     """
     image = None #atributo
+    margin_left = None
+    margin_right = None
 
     def __init__(self):
         
         background_fig = pygame.image.load("FugaEspacial/Images/background.png")
         background_fig.convert() #convert a imagem no display
         self.image = background_fig #atribui a imagem para o background
+    
+        margin_left_fig = pygame.image.load("FugaEspacial/Images/margin_1.png")
+        margin_left_fig.convert()
+        margin_left_fig = pygame.transform.scale(margin_left_fig, (60, 602)) #redimensiona a imagem da margem
+        self.margin_left = margin_left_fig
+
+        margin_right_fig = pygame.image.load("FugaEspacial/Images/margin_2.png")
+        margin_right_fig.convert()
+        margin_right_fig = pygame.transform.scale(margin_left_fig, (60, 602)) #redimensiona a imagem da margem
+        self.margin_right = margin_right_fig    
+
     # __init__()
 
     def update(self, dt):
         pass
     # update()
 
-    def draw(self, screen): #imagem do background na tela para a cordenada 0,0
-        screen.blit(self.image, (0,0))
+    def draw(self, screen): 
+        screen.blit(self.image, (0,0)) #imagem do background na tela para a cordenada 0,0
+        screen.blit(self.margin_left, (0,0)) # 60 depois da primeira margem
+        screen.blit(self.margin_right, (740, 0)) # 60 depois da segunda margem
     # draw() 
 
 class Game:
