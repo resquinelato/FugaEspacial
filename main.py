@@ -18,16 +18,18 @@ class Background:
         
         background_fig = pygame.image.load("FugaEspacial/Images/background.png")
         background_fig.convert() #convert a imagem no display
+        background_fig = pygame.transform.scale(background_fig, (800,602))
         self.image = background_fig #atribui a imagem para o background
     
         margin_left_fig = pygame.image.load("FugaEspacial/Images/margin_1.png")
         margin_left_fig.convert()
-        margin_left_fig = pygame.transform.scale(margin_left_fig, (60, 602)) #redimensiona a imagem da margem
+        margin_left_fig = pygame.transform.scale(margin_left_fig, (60,602))
+        #margin_left_fig = pygame.transform.scale(margin_left_fig, (60, 602)) #redimensiona a imagem da margem
         self.margin_left = margin_left_fig
 
         margin_right_fig = pygame.image.load("FugaEspacial/Images/margin_2.png")
         margin_right_fig.convert()
-        margin_right_fig = pygame.transform.scale(margin_left_fig, (60, 602)) #redimensiona a imagem da margem
+        margin_right_fig = pygame.transform.scale(margin_right_fig, (60, 602)) #redimensiona a imagem da margem
         self.margin_right = margin_right_fig    
 
     # __init__()
@@ -40,7 +42,16 @@ class Background:
         screen.blit(self.image, (0,0)) #imagem do background na tela para a cordenada 0,0
         screen.blit(self.margin_left, (0,0)) # 60 depois da primeira margem
         screen.blit(self.margin_right, (740, 0)) # 60 depois da segunda margem
-    # draw() 
+    # draw()
+
+    # Define posições das imagens do Plano de fundo para criar movimentos
+    def move(self, screen, scr_height, movL_x, movL_y, movR_x, movR_y):
+        #movimento do backdroud em 3 blocos contínuos
+        for i in range(0, 2):
+            screen.blit(self.image, (movL_x, movL_y - i * scr_height))
+            screen.blit(self.margin_left, (movL_x, movL_y - i * scr_height))
+            screen.blit(self.margin_right, (movR_x, movR_y - i * scr_height))
+
 
 class Game:
     screen = None #inicializar atributos
@@ -88,6 +99,17 @@ class Game:
         Laço principal
         """
 
+        # variaveis para movimento de plano de fundo
+        velocidade_background = 10
+
+        # movimento da margem esqueda / também para plano de fundo
+        movL_x = 0
+        movL_y = 0
+
+        # movimento da margem direita / também para plano de fundo
+        movR_x = 740
+        movR_y = 0
+
         # Criar o plano de fundo
         self.background = Background() # cria o objeto background
 
@@ -108,13 +130,23 @@ class Game:
             # Desenha o background buffer
             self.elements_draw() #desenha elementos
 
+            # adiciona movimento ao background
+            self.background.move(self.screen, self.height, movL_x, movL_y, movR_x, movR_y)
+            movL_y = movL_y + velocidade_background
+            movR_y = movR_y + velocidade_background
+            
+            # se a imagem ultrapassar a extremidade da tela, move de volta
+            if movL_y > 600 and movL_y > 600:
+                movL_y -= 600
+                movR_y -= 600
+
             # Atualiza a tela
             pygame.display.update() #atuliza a tela com os elementos masi recentes
             clock.tick(2000) #atualiza a tela. Taxa máxima de atualização. 2000 quadrados por segundo
+
     # loop()
 
-# Game
-
+#game
 
 # Inicia o jogo: Cria o objeto game e sechama o loob básico
 game = Game("resolution", "fullscreen") # instanciar o objeto jogo
