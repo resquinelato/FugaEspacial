@@ -39,6 +39,9 @@ class Background:
     # update()
 
     def draw(self, screen): 
+        # os objetos são desenhados na tela pelo metodo blit
+        # copia dados de imagem de uma superfície pra outra
+        # esse metodos desenha objetos que são exibistos apos o .update()
         screen.blit(self.image, (0,0)) #imagem do background na tela para a cordenada 0,0
         screen.blit(self.margin_left, (0,0)) # 60 depois da primeira margem
         screen.blit(self.margin_right, (740, 0)) # 60 depois da segunda margem
@@ -51,6 +54,32 @@ class Background:
             screen.blit(self.image, (movL_x, movL_y - i * scr_height))
             screen.blit(self.margin_left, (movL_x, movL_y - i * scr_height))
             screen.blit(self.margin_right, (movR_x, movR_y - i * scr_height))
+# Background
+
+
+class Player:
+    """
+    Esta classe define o Jogador
+    """
+    image = None # inicializa atributos do jogador
+    x = None
+    y = None
+
+    def __init__(self, x, y):
+        player_fig = pygame.image.load("Images/player.png")
+        player_fig.convert()
+        self.image = pygame.transform.scale(player_fig, (90,90))
+        self.image = player_fig
+        self.x = x
+        self.y = y
+
+    # __init__()
+
+    # Desenhar Player
+    def draw(self, screen, x, y): # método para desenhar Player
+        screen.blit(self.image, (x, y)) 
+    
+#Player
 
 
 class Game:
@@ -60,6 +89,7 @@ class Game:
     height = 600
     run = True
     background = None
+    player = None # atributo player
 
     def __init__(self, size, fullscreen):
 
@@ -113,6 +143,13 @@ class Game:
         # Criar o plano de fundo
         self.background = Background() # cria o objeto background
 
+        # Posicao do Player
+        x = (self.width - 56) / 2
+        y = self.height - 125
+
+        # Criar o Player
+        self.player = Player(x, y)
+
         #Inicialzia o relógio e o dt que vai limitar o valor de FPS do jogo
         clock = pygame.time.Clock() #inicia o relogio e o dt
         dt = 16 # taxa máxima de frames por segundo. delta time milisec
@@ -140,13 +177,17 @@ class Game:
                 movL_y -= 600
                 movR_y -= 600
 
+            # Desenhar o Player
+            self.player.draw(self.screen, x, y) # desenha o player pelo método draw
+        
+
             # Atualiza a tela
             pygame.display.update() #atuliza a tela com os elementos masi recentes
             clock.tick(2000) #atualiza a tela. Taxa máxima de atualização. 2000 quadrados por segundo
 
     # loop()
 
-#game
+# Game
 
 # Inicia o jogo: Cria o objeto game e sechama o loob básico
 game = Game("resolution", "fullscreen") # instanciar o objeto jogo
