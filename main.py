@@ -16,18 +16,18 @@ class Background:
 
     def __init__(self):
         
-        background_fig = pygame.image.load("FugaEspacial/Images/background.png")
+        background_fig = pygame.image.load("Images/background.png")
         background_fig.convert() #convert a imagem no display
         background_fig = pygame.transform.scale(background_fig, (800,602))
         self.image = background_fig #atribui a imagem para o background
     
-        margin_left_fig = pygame.image.load("FugaEspacial/Images/margin_1.png")
+        margin_left_fig = pygame.image.load("Images/margin_1.png")
         margin_left_fig.convert()
         margin_left_fig = pygame.transform.scale(margin_left_fig, (60,602))
         #margin_left_fig = pygame.transform.scale(margin_left_fig, (60, 602)) #redimensiona a imagem da margem
         self.margin_left = margin_left_fig
 
-        margin_right_fig = pygame.image.load("FugaEspacial/Images/margin_2.png")
+        margin_right_fig = pygame.image.load("Images/margin_2.png")
         margin_right_fig.convert()
         margin_right_fig = pygame.transform.scale(margin_right_fig, (60, 602)) #redimensiona a imagem da margem
         self.margin_right = margin_right_fig    
