@@ -68,17 +68,15 @@ class Player:
     def __init__(self, x, y):
         player_fig = pygame.image.load("Images/player.png")
         player_fig.convert()
-        self.image = pygame.transform.scale(player_fig, (90,90))
+        player_fig = pygame.transform.scale(player_fig, (90,90))
         self.image = player_fig
         self.x = x
         self.y = y
-
     # __init__()
 
     # Desenhar Player
-    def draw(self, screen, x, y): # método para desenhar Player
+    def draw (self, screen, x, y): # método para desenhar Player
         screen.blit(self.image, (x, y)) 
-    
 #Player
 
 
@@ -145,7 +143,7 @@ class Game:
 
         # Posicao do Player
         x = (self.width - 56) / 2
-        y = self.height - 125
+        y = (self.height - 125)
 
         # Criar o Player
         self.player = Player(x, y)
@@ -171,7 +169,7 @@ class Game:
             self.background.move(self.screen, self.height, movL_x, movL_y, movR_x, movR_y)
             movL_y = movL_y + velocidade_background
             movR_y = movR_y + velocidade_background
-            
+
             # se a imagem ultrapassar a extremidade da tela, move de volta
             if movL_y > 600 and movL_y > 600:
                 movL_y -= 600
@@ -179,14 +177,11 @@ class Game:
 
             # Desenhar o Player
             self.player.draw(self.screen, x, y) # desenha o player pelo método draw
-        
-
+            
             # Atualiza a tela
             pygame.display.update() #atuliza a tela com os elementos masi recentes
             clock.tick(2000) #atualiza a tela. Taxa máxima de atualização. 2000 quadrados por segundo
-
     # loop()
-
 # Game
 
 # Inicia o jogo: Cria o objeto game e sechama o loob básico
