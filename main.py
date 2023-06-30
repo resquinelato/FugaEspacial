@@ -5,6 +5,7 @@ A nave precisa se desviar das ameaças e sobreviver até atingir a zona de segur
 """
 
 import pygame
+import time #uso da função-membro time.sleep(...) in loop
 
 class Background:
     """
@@ -88,6 +89,8 @@ class Game:
     run = True
     background = None
     player = None # atributo player
+    render_text_bateulateral = None
+    render_text_perdeu = None
 
     # Movimento do Player
     DIREITA = pygame.K_RIGHT
@@ -99,7 +102,8 @@ class Game:
         """
         Função que inicializa o pygame, define a resolução da tela,
         caption e desabilita o mouse
-        """ # Operações
+        """ 
+        # Operações
         pygame.init() #inicializar o pygame
 
         self.screen = pygame.display.set_mode((self.width, self.height)) #tamanho da tela
@@ -108,6 +112,12 @@ class Game:
         pygame.mouse.set_visible(0) # desabilita o mouse
         pygame.display.set_caption('Fuga Espacial')
 
+        # define as fontes
+        my_font = pygame.font.Font("Fonts/Fonte4.ttf", 100)
+
+        # Mensagens para o jogador
+        self.render_text_bateulateral = my_font.render("VOCê BATEU!", 0,(255, 255, 255)) #(texto, opaco/transparente 0/1, cor do texto )
+        self.render_text_perdeu = my_font.render("GAME OVER!", 0, (255, 0, 0)) # (texto, opaco/transparente 0/1, cor do texto)      
     # init()
 
     def handle_events(self):
@@ -204,6 +214,14 @@ class Game:
 
             # Desenhar o Player
             self.player.draw(self.screen, x, y) # desenha o player pelo método draw
+
+            # Restrição do movimento do Player
+            # Se o player bate na lateral não é Game Over
+            if x > 760 - 92 or x < 40 + 5:
+                self.screen.blit(self.render_text_bateulateral, (80,200))
+                time.sleep(3)
+                self.loop()
+                self.run = False
             
             # Atualiza a tela
             pygame.display.update() #atuliza a tela com os elementos masi recentes
