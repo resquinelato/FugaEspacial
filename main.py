@@ -89,6 +89,11 @@ class Game:
     background = None
     player = None # atributo player
 
+    # Movimento do Player
+    DIREITA = pygame.K_RIGHT
+    ESQUERDA = pygame.K_LEFT
+    mudar_x = 0.0
+
     def __init__(self, size, fullscreen):
 
         """
@@ -110,8 +115,26 @@ class Game:
         Trata o evento e toma a ação necessária.
         """
         for event in pygame.event.get():
+
+            # interromper o jogo quando clicar em fechar
             if event.type == pygame.QUIT:
-                self.run = False # interromper o jogo quando clicar em fechar
+                self.run = False 
+
+            # se clicar em qualquer tecla, entra no if
+            if event.type == pygame.KEYDOWN:
+
+                # se clicar na seta a esquerda, anda 3 para esquerda no eixo x
+                if event.key == self.ESQUERDA:
+                    self.mudar_x = -3
+
+                # se clicar na seta a direita, anda 3 para direita no eixo x
+                if event.key == self.DIREITA:
+                    self.mudar_x = 3
+            
+            # se soltar qualquer tecla nao faz nada
+            if event.type == pygame.KEYUP:
+                if event.key == self.ESQUERDA or event.key == self.DIREITA:
+                    self.mudar_x = 0
     # handle_events()
 
     def elements_update(self, dt):
@@ -174,6 +197,10 @@ class Game:
             if movL_y > 600 and movL_y > 600:
                 movL_y -= 600
                 movR_y -= 600
+
+            # Movimentação do Player
+            # Altera a coordenada x da nave de acordo com as mudanças no event_handle() para mover
+            x = x + self.mudar_x
 
             # Desenhar o Player
             self.player.draw(self.screen, x, y) # desenha o player pelo método draw
