@@ -113,7 +113,7 @@ class Game:
         pygame.display.set_caption('Fuga Espacial')
 
         # define as fontes
-        my_font = pygame.font.Font("Fonts/Fonte4.ttf", 100)
+        my_font = pygame.font.Font("FugaEspacial/Fonts/Fonte4.ttf", 100)
 
         # Mensagens para o jogador
         self.render_text_bateulateral = my_font.render("VOCê BATEU!", 0,(255, 255, 255)) #(texto, opaco/transparente 0/1, cor do texto )
@@ -219,6 +219,7 @@ class Game:
             # Se o player bate na lateral não é Game Over
             if x > 760 - 92 or x < 40 + 5:
                 self.screen.blit(self.render_text_bateulateral, (80,200))
+                pygame.display.update()  # atualizar a tela
                 time.sleep(3)
                 self.loop()
                 self.run = False
