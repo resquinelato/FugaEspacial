@@ -5,6 +5,7 @@ A nave precisa se desviar das ameaças e sobreviver até atingir a zona de segur
 """
 
 import pygame
+import time #uso da função-membro time.sleep(...) in loop
 
 class Background:
     """
@@ -88,13 +89,21 @@ class Game:
     run = True
     background = None
     player = None # atributo player
+    render_text_bateulateral = None
+    render_text_perdeu = None
+
+    # Movimento do Player
+    DIREITA = pygame.K_RIGHT
+    ESQUERDA = pygame.K_LEFT
+    mudar_x = 0.0
 
     def __init__(self, size, fullscreen):
 
         """
         Função que inicializa o pygame, define a resolução da tela,
         caption e desabilita o mouse
-        """ # Operações
+        """ 
+        # Operações
         pygame.init() #inicializar o pygame
 
         self.screen = pygame.display.set_mode((self.width, self.height)) #tamanho da tela
@@ -103,6 +112,12 @@ class Game:
         pygame.mouse.set_visible(0) # desabilita o mouse
         pygame.display.set_caption('Fuga Espacial')
 
+        # define as fontes
+        my_font = pygame.font.Font("Fonts/Fonte4.ttf", 100)
+
+        # Mensagens para o jogador
+        self.render_text_bateulateral = my_font.render("VOCê BATEU!", 0,(255, 255, 255)) #(texto, opaco/transparente 0/1, cor do texto )
+        self.render_text_perdeu = my_font.render("GAME OVER!", 0, (255, 0, 0)) # (texto, opaco/transparente 0/1, cor do texto)      
     # init()
 
     def handle_events(self):
@@ -110,8 +125,26 @@ class Game:
         Trata o evento e toma a ação necessária.
         """
         for event in pygame.event.get():
+
+            # interromper o jogo quando clicar em fechar
             if event.type == pygame.QUIT:
-                self.run = False # interromper o jogo quando clicar em fechar
+                self.run = False 
+
+            # se clicar em qualquer tecla, entra no if
+            if event.type == pygame.KEYDOWN:
+
+                # se clicar na seta a esquerda, anda 3 para esquerda no eixo x
+                if event.key == self.ESQUERDA:
+                    self.mudar_x = -3
+
+                # se clicar na seta a direita, anda 3 para direita no eixo x
+                if event.key == self.DIREITA:
+                    self.mudar_x = 3
+            
+            # se soltar qualquer tecla nao faz nada
+            if event.type == pygame.KEYUP:
+                if event.key == self.ESQUERDA or event.key == self.DIREITA:
+                    self.mudar_x = 0
     # handle_events()
 
     def elements_update(self, dt):
@@ -175,8 +208,20 @@ class Game:
                 movL_y -= 600
                 movR_y -= 600
 
+            # Movimentação do Player
+            # Altera a coordenada x da nave de acordo com as mudanças no event_handle() para mover
+            x = x + self.mudar_x
+
             # Desenhar o Player
             self.player.draw(self.screen, x, y) # desenha o player pelo método draw
+
+            # Restrição do movimento do Player
+            # Se o player bate na lateral não é Game Over
+            if x > 760 - 92 or x < 40 + 5:
+                self.screen.blit(self.render_text_bateulateral, (80,200))
+                time.sleep(3)
+                self.loop()
+                self.run = False
             
             # Atualiza a tela
             pygame.display.update() #atuliza a tela com os elementos masi recentes
