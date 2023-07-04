@@ -6,6 +6,7 @@ A nave precisa se desviar das ameaças e sobreviver até atingir a zona de segur
 
 import pygame
 import time #uso da função-membro time.sleep(...) in loop
+import random
 
 class Background:
     """
@@ -80,6 +81,29 @@ class Player:
         screen.blit(self.image, (x, y)) 
 #Player
 
+class Hazard:
+    """
+    Esta classe define Ameaça ao jogador
+    """
+    image = None
+    y = None
+    x = None
+    
+    def __init__(self, img, x, y):
+        hazard_fig = pygame.image.load(img)
+        hazard_fig.convert()
+        hazard_fig = pygame.transform.scale(hazard_fig, (130, 130))
+        self.image = hazard_fig
+        self.x = x
+        self.y = y
+    # __init__()
+    
+    def draw (self, screen, x, y):
+        screen.blit(self.image, (x,y))
+    # draw
+# Hazard
+
+
 
 class Game:
     screen = None #inicializar atributos
@@ -89,6 +113,7 @@ class Game:
     run = True
     background = None
     player = None # atributo player
+    hazard = []
     render_text_bateulateral = None
     render_text_perdeu = None
 
@@ -160,8 +185,9 @@ class Game:
         Laço principal
         """
         
-        # variaveis para movimento de plano de fundo
+        # variaveis para movimento plano de fundo/inimigos
         velocidade_background = 10
+        velocidade_hazard = 10
 
         # movimento da margem esqueda / também para plano de fundo
         movL_x = 0
@@ -170,6 +196,14 @@ class Game:
         # movimento da margem direita / também para plano de fundo
         movR_x = 740
         movR_y = 0
+
+        hzrd = 0
+        h_x = random.randrange(125, 660)
+        h_y = -500 # localização
+
+        # Info Hazard (dimensão)
+        h_width = 100
+        h_height = 110
 
         # Criar o plano de fundo
         self.background = Background() # cria o objeto background
@@ -180,6 +214,13 @@ class Game:
 
         # Criar o Player
         self.player = Player(x, y)
+
+        # Criar os Hazards (inimigos) adiciona elemento na lista
+        self.hazard.append(Hazard("FugaEspacial/Images/satelite.png", h_x, h_y))
+        self.hazard.append(Hazard("FugaEspacial/Images/nave.png", h_x, h_y))
+        self.hazard.append(Hazard("FugaEspacial/Images/cometaVermelho.png", h_x, h_y))
+        self.hazard.append(Hazard("FugaEspacial/Images/meteoros.png", h_x, h_y))
+        self.hazard.append(Hazard("FugaEspacial/Images/buracoNegro.png", h_x, h_y))
 
         #Inicialzia o relógio e o dt que vai limitar o valor de FPS do jogo
         clock = pygame.time.Clock() #inicia o relogio e o dt
@@ -223,7 +264,18 @@ class Game:
                 time.sleep(3)
                 self.loop()
                 self.run = False
-            
+
+            # adicionando movimento ao hazard
+            h_y = h_y + velocidade_hazard / 4 # move pra baixo
+            self.hazard[hzrd].draw(self.screen, h_x, h_y) # chama o étodo draw pra desenhar na tela
+            h_y = h_y + velocidade_hazard # mantém a velocidade constante a cada quadro
+
+            # definindo onde o hazard vai aparecer, recomeçando a posição d obstaculo e da faixa
+            if h_y > self.height: # se passou da tela
+                h_y = 0 - h_height # aparece na posição onde hazarde aparece por inteiro
+                h_x = random.randrange(125, 650 - h_height) #gerador de movimento
+                hzrd = random.randint(0, 4) #hazard aleatorio
+
             # Atualiza a tela
             pygame.display.update() #atuliza a tela com os elementos masi recentes
             clock.tick(2000) #atualiza a tela. Taxa máxima de atualização. 2000 quadrados por segundo
